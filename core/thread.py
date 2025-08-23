@@ -207,8 +207,6 @@ class Thread:
                 {"channel_id": str(self.channel.id)},
                 {"$set": {"snoozed": True, "snooze_data": self.snooze_data}},
             )
-        import logging
-
         logging.info(f"[SNOOZE] DB update result: {result.modified_count}")
         # Delete channel
         await channel.delete(reason="Thread snoozed by moderator")
@@ -220,8 +218,6 @@ class Thread:
         Recreate channel in original category/position, replay messages, mark as not snoozed.
         """
         if not self.snooze_data or not isinstance(self.snooze_data, dict):
-            import logging
-
             logging.warning(
                 f"[UNSNOOZE] Tried to restore thread {self.id} but snooze_data is None or not a dict."
             )
@@ -291,8 +287,6 @@ class Thread:
                     {"channel_id": str(channel.id)},
                     {"$set": {"snoozed": False, "channel_id": str(channel.id)}, "$unset": {"snooze_data": ""}},
                 )
-        import logging
-
         logging.info(f"[UNSNOOZE] DB update result: {result.modified_count}")
         # Notify in the configured channel
         notify_channel = self.bot.config.get("unsnooze_notify_channel") or "thread"

@@ -207,8 +207,6 @@ class Thread:
                 {"channel_id": str(self.channel.id)},
                 {"$set": {"snoozed": True, "snooze_data": self.snooze_data}},
             )
-        import logging
-
         logging.info(f"[SNOOZE] DB update result: {result.modified_count}")
         # Delete channel
         await channel.delete(reason="Thread snoozed by moderator")
@@ -220,8 +218,6 @@ class Thread:
         Recreate channel in original category/position, replay messages, mark as not snoozed.
         """
         if not self.snooze_data or not isinstance(self.snooze_data, dict):
-            import logging
-
             logging.warning(
                 f"[UNSNOOZE] Tried to restore thread {self.id} but snooze_data is None or not a dict."
             )
@@ -291,8 +287,6 @@ class Thread:
                     {"channel_id": str(channel.id)},
                     {"$set": {"snoozed": False, "channel_id": str(channel.id)}, "$unset": {"snooze_data": ""}},
                 )
-        import logging
-
         logging.info(f"[UNSNOOZE] DB update result: {result.modified_count}")
         # Notify in the configured channel
         notify_channel = self.bot.config.get("unsnooze_notify_channel") or "thread"
@@ -1009,7 +1003,10 @@ class Thread:
         return msg
 
     async def reply(
-        self, message: discord.Message, anonymous: bool = False, plain: bool = False
+        self,
+        message: discord.Message,
+        anonymous: bool = False,
+        plain: bool = False,
     ) -> typing.Tuple[typing.List[discord.Message], discord.Message]:
         """Returns List[user_dm_msg] and thread_channel_msg"""
         if not message.content and not message.attachments and not message.stickers:
@@ -1070,7 +1067,11 @@ class Thread:
         else:
             # Send the same thing in the thread channel.
             msg = await self.send(
-                message, destination=self.channel, from_mod=True, anonymous=anonymous, plain=plain
+                message,
+                destination=self.channel,
+                from_mod=True,
+                anonymous=anonymous,
+                plain=plain,
             )
 
             tasks.append(
@@ -1252,7 +1253,11 @@ class Thread:
                 discord.StickerFormatType.gif,
             ):
                 images.append(
-                    (f"https://media.discordapp.net/stickers/{i.id}.{i.format.file_extension}", i.name, True)
+                    (
+                        f"https://media.discordapp.net/stickers/{i.id}.{i.format.file_extension}",
+                        i.name,
+                        True,
+                    )
                 )
             elif i.format == discord.StickerFormatType.lottie:
                 # save the json lottie representation

@@ -1366,7 +1366,7 @@ class ModmailBot(commands.Bot):
                         "Command %s has no permissions check, adding invalid level.",
                         ctx.command.qualified_name,
                     )
-                    checks.has_permissions(PermissionLevel.INVALID)(ctx.command)
+                    ctx.command.checks.append(checks.has_permissions(PermissionLevel.INVALID))
 
                 await self.invoke(ctx)
                 continue
@@ -1492,7 +1492,7 @@ class ModmailBot(commands.Bot):
                 logger.warning("Failed to find linked message for reactions: %s", e)
                 return
 
-        if self.config["transfer_reactions"] and linked_messages is not [None]:
+        if self.config["transfer_reactions"] and linked_messages != [None]:
             if payload.event_type == "REACTION_ADD":
                 for msg in linked_messages:
                     await self.add_reaction(msg, reaction)

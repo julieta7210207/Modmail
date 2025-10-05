@@ -250,7 +250,7 @@ class ConfigManager:
     force_str = {"command_permissions", "level_permissions"}
 
     defaults = {**public_keys, **private_keys, **protected_keys}
-    all_keys = set(defaults.keys())
+    all_keys = set(defaults)
 
     def __init__(self, bot):
         self.bot = bot
@@ -423,7 +423,7 @@ class ConfigManager:
                     if time.arg:
                         raise ValueError
                 except BadArgument as exc:
-                    raise InvalidConfigError(*exc.args)
+                    raise InvalidConfigError(str(exc))
                 except Exception as e:
                     logger.debug(e)
                     raise InvalidConfigError(

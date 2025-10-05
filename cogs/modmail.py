@@ -1794,12 +1794,14 @@ class Modmail(commands.Cog):
             for mention, reason in roles:
                 line = mention + f" - {reason or 'No Reason Provided'}\n"
                 if len(embed.description) + len(line) > 2048:
-                    role_embeds[-1].set_author()
-                    embed = discord.Embed(
-                        title="Blocked Roles",
-                        color=self.bot.main_color,
-                        description=line,
+                    role_embeds.append(
+                        discord.Embed(
+                            title="Blocked Roles",
+                            color=self.bot.main_color,
+                            description=line,
+                        )
                     )
+                    embed = role_embeds[-1]
                     role_embeds.append(embed)
                 else:
                     embed.description += line
